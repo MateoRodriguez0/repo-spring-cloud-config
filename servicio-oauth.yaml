@@ -1,0 +1,19 @@
+spring:
+  devtools:
+    livereload:
+      port: 9100
+  security:
+    oauth2:
+      authorizationserver:
+        endpoint:
+          oidc:
+            logout-uri: 
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
