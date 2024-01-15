@@ -17,3 +17,27 @@ management:
     web:
       exposure:
         include: '*'
+# traceID y spanId son claves MDC predefinidas; queremos que los registros las incluyan    
+logging:
+  pattern:
+    level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
+server:
+  port: 9090
+
+# Todos los seguimientos deben enviarse a la herramienta de análisis de latencia.   
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoints:
+    web:
+      exposure:
+        include:
+        - prometheus
+# Para que Exemplars funcione necesitamos depósitos de histogramas
+  metrics:
+    distribution: 
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
