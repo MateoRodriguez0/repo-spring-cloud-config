@@ -31,12 +31,7 @@ management:
         http:
           server:
             requests: true
-config:
-  security:
-   oauth2:
-     client:
-       id: frontendapp
-       secret: 12345
+
 # traceID y spanId son claves MDC predefinidas; queremos que los registros las incluyan    
 logging:
   pattern:
