@@ -12,18 +12,50 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
+resilience4j:
+  circuitbreaker:
+    configs:
+     defecto:
+       sliding-window-size: 10
+       failure-rate-threshold: 40
+       wait-duration-in-open-state: 20s
+       permitted-number-of-calls-in-half-open-state: 8
+       slow-call-duration-threshold: 3s
+       slow-call-rate-threshold: 30   
+    instances:
+      productos:
+        base-config: defecto
+  timelimiter:
+    configs:
+      defecto:
+        timeout-duration: 5s
+    instances:
+      productos:
+        base-config: defecto         
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9000
+          
+  application:
+    name: servico-gateway-server      
+ 
+# traceID y spanId son claves MDC predefinidas; queremos que los registros las incluyan    
+logging:
+  pattern:
+    level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
+
+# Todos los seguimientos deben enviarse a la herramienta de análisis de latencia.   
 management:
-  endpoints:
-    web:
-      exposure:
-        include: 
-        - '*'
-        - prometheus
-  # Todos los seguimientos deben enviarse a la herramienta de análisis de latencia.   
   tracing:
     sampling:
       probability: 1.0
-       
+  endpoints:
+    web:
+      exposure:
+        include:
+        - prometheus
 # Para que Exemplars funcione necesitamos depósitos de histogramas
   metrics:
     distribution: 
@@ -31,8 +63,5 @@ management:
         http:
           server:
             requests: true
-
-# traceID y spanId son claves MDC predefinidas; queremos que los registros las incluyan    
-logging:
-  pattern:
-    level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
+        
+        
