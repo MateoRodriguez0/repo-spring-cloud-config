@@ -31,4 +31,21 @@ resilience4j:
         timeout-duration: 5s
     instances:
       productos:
-        base-config: defecto         
+        base-config: defecto  
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*,prometheus'
+  tracing:
+    sampling:
+      probability: '1.0'
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: 'true'
+logging:
+  pattern:
+    level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
